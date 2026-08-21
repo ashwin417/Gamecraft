@@ -1,0 +1,1003 @@
+/* ============================================================
+   styles.css — CYBER GUARDIAN: MISSION INDIGO
+   Design tokens
+   Color   : Indigo #4F46E5 · Neon Blue #38BDF8 · Cyber Green #22C55E
+             Alert Red #EF4444 · Dark #0F172A
+   Type    : "Orbitron" (display / HUD digits) + "Share Tech Mono" (body / terminal)
+   Signature: the HUD timer is a "system integrity ring" — a radial
+              countdown that reframes the clock as the facility's
+              failing shield rather than a plain number.
+   ============================================================ */
+
+:root {
+  --indigo: #4F46E5;
+  --blue: #38BDF8;
+  --green: #22C55E;
+  --red: #EF4444;
+  --bg: #0F172A;
+  --bg-elevated: #131c33;
+  --bg-card: #101a30;
+  --border: rgba(56, 189, 248, 0.25);
+  --text: #E2E8F0;
+  --text-muted: #94A3B8;
+  --radius: 10px;
+  --font-display: 'Orbitron', 'Segoe UI', sans-serif;
+  --font-mono: 'Share Tech Mono', 'Courier New', monospace;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: radial-gradient(circle at 50% 0%, #16213f 0%, var(--bg) 60%);
+  color: var(--text);
+  font-family: var(--font-mono);
+  min-height: 100vh;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  padding: 16px;
+}
+
+#app {
+  width: 100%;
+  max-width: 960px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+h1, h2, h3, .display {
+  font-family: var(--font-display);
+  letter-spacing: 0.03em;
+  margin: 0;
+}
+
+button {
+  font-family: var(--font-display);
+  cursor: pointer;
+}
+
+/* Visible focus indicators everywhere, keyboard-first */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+[tabindex]:focus-visible {
+  outline: 3px solid var(--green);
+  outline-offset: 2px;
+}
+
+/* ---------------- Screens ---------------- */
+.screen {
+  display: none;
+}
+.screen.active {
+  display: flex;
+}
+
+.card {
+  background: linear-gradient(180deg, var(--bg-elevated), var(--bg-card));
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 28px;
+  box-shadow: 0 0 0 1px rgba(56,189,248,0.05), 0 20px 60px rgba(0,0,0,0.45);
+  position: relative;
+  overflow: hidden;
+}
+.card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(180deg, rgba(56,189,248,0.03) 0px, rgba(56,189,248,0.03) 1px, transparent 1px, transparent 4px);
+  pointer-events: none;
+}
+
+.eyebrow {
+  font-family: var(--font-mono);
+  color: var(--blue);
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.title {
+  font-size: 28px;
+  color: var(--text);
+  text-shadow: 0 0 18px rgba(79,70,229,0.6);
+}
+.subtitle {
+  color: var(--text-muted);
+  margin-top: 6px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* ---------------- Name capture ---------------- */
+#screen-name { justify-content: center; align-items: center; min-height: 70vh; }
+#screen-name .card { width: 100%; max-width: 480px; }
+
+.field {
+  margin-top: 22px;
+}
+.field label {
+  display: block;
+  font-size: 12px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 8px;
+}
+.field input[type="text"] {
+  width: 100%;
+  padding: 12px 14px;
+  background: rgba(15,23,42,0.8);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 16px;
+}
+.field input[type="text"]:focus {
+  border-color: var(--blue);
+}
+.error-text {
+  color: var(--red);
+  font-size: 13px;
+  margin-top: 8px;
+  min-height: 16px;
+  display: none;
+}
+.error-text.visible { display: block; }
+.char-hint {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 6px;
+}
+
+.btn-row { display: flex; gap: 12px; margin-top: 24px; flex-wrap: wrap; }
+
+.btn {
+  border: none;
+  border-radius: 8px;
+  padding: 12px 22px;
+  font-size: 14px;
+  letter-spacing: 0.05em;
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+.btn:active { transform: translateY(1px); }
+.btn-primary {
+  background: linear-gradient(135deg, var(--indigo), #6366F1);
+  color: white;
+  box-shadow: 0 0 20px rgba(79,70,229,0.5);
+}
+.btn-primary:hover { box-shadow: 0 0 28px rgba(79,70,229,0.75); }
+.btn-secondary {
+  background: transparent;
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+}
+.btn-secondary:hover { color: var(--text); border-color: var(--blue); }
+.btn-ghost {
+  background: rgba(56,189,248,0.08);
+  color: var(--blue);
+  border: 1px solid var(--border);
+}
+
+/* ---------------- Instructions ---------------- */
+#screen-instructions { justify-content: center; align-items: center; min-height: 70vh; }
+#screen-instructions .card { width: 100%; max-width: 620px; }
+
+.brief-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  margin-top: 20px;
+}
+@media (max-width: 560px) {
+  .brief-grid { grid-template-columns: 1fr; }
+}
+.brief-section h3 {
+  font-size: 13px;
+  color: var(--blue);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 8px;
+}
+.brief-section ul { margin: 0; padding-left: 18px; font-size: 13px; color: var(--text); line-height: 1.7; }
+.brief-section p { font-size: 13px; color: var(--text); line-height: 1.6; margin: 0; }
+.score-pos { color: var(--green); }
+.score-neg { color: var(--red); }
+
+/* ---------------- HUD / game screen ---------------- */
+#screen-game { flex-direction: column; gap: 10px; }
+
+.hud {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 10px 16px;
+}
+
+.hud-item { display: flex; flex-direction: column; gap: 2px; min-width: 60px; }
+.hud-label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; }
+.hud-value { font-family: var(--font-display); font-size: 18px; color: var(--text); }
+
+#hudScore.pulse { animation: scorePulse 0.35s ease; }
+@keyframes scorePulse {
+  0% { transform: scale(1); color: var(--green); }
+  40% { transform: scale(1.25); color: var(--green); }
+  100% { transform: scale(1); color: var(--text); }
+}
+body.reduced-motion #hudScore.pulse { animation: none; }
+
+#comboBox.combo-hot .hud-value { color: var(--indigo); text-shadow: 0 0 10px rgba(79,70,229,0.8); }
+#hudComboMult { color: var(--blue); font-size: 12px; margin-left: 4px; }
+
+.powerup-none { color: var(--text-muted); font-size: 12px; }
+.powerup-active { color: var(--blue); font-size: 12px; }
+
+/* Timer: radial "system integrity ring" */
+.timer-wrap {
+  position: relative;
+  width: 64px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.timer-wrap svg { position: absolute; inset: 0; transform: rotate(-90deg); }
+.timer-ring-bg { fill: none; stroke: rgba(148,163,184,0.15); stroke-width: 6; }
+.timer-ring { fill: none; stroke: var(--blue); stroke-width: 6; stroke-linecap: round; transition: stroke-dashoffset 0.2s linear; }
+#hudTimerText { font-family: var(--font-display); font-size: 18px; position: relative; z-index: 1; }
+
+.timer-wrap.timer-warning .timer-ring { stroke: #FACC15; }
+.timer-wrap.timer-warning #hudTimerText { color: #FACC15; }
+.timer-wrap.timer-warning { animation: timerFlashYellow 1s infinite; }
+
+.timer-wrap.timer-critical .timer-ring { stroke: var(--red); }
+.timer-wrap.timer-critical #hudTimerText { color: var(--red); }
+.timer-wrap.timer-critical { animation: timerFlashRed 0.5s infinite; }
+
+@keyframes timerFlashYellow {
+  0%, 100% { filter: drop-shadow(0 0 0 rgba(250,204,21,0)); }
+  50% { filter: drop-shadow(0 0 10px rgba(250,204,21,0.9)); }
+}
+@keyframes timerFlashRed {
+  0%, 100% { filter: drop-shadow(0 0 0 rgba(239,68,68,0)); }
+  50% { filter: drop-shadow(0 0 14px rgba(239,68,68,1)); }
+}
+body.reduced-motion .timer-wrap.timer-warning,
+body.reduced-motion .timer-wrap.timer-critical {
+  animation: none;
+}
+
+.hud-audio { display: flex; align-items: center; gap: 8px; margin-left: auto; }
+.hud-audio input[type="range"] { width: 80px; }
+
+.hud-mission { display: flex; flex-direction: column; gap: 2px; }
+.hud-mission .hud-value { font-size: 13px; color: var(--blue); }
+
+/* ---------------- Canvas ---------------- */
+.canvas-wrap {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--bg);
+  line-height: 0;
+}
+#canvas {
+  width: 100%;
+  height: auto;
+  display: block;
+  aspect-ratio: 900 / 600;
+  touch-action: none;
+}
+
+.mobile-controls {
+  display: none;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 8px;
+}
+@media (max-width: 720px) {
+  .mobile-controls { display: flex; }
+}
+.mobile-controls .pad-btn {
+  width: 52px; height: 52px;
+  border-radius: 50%;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-size: 18px;
+}
+/* Story Mode's guard-stun trigger — set apart from the movement pad with
+   its own accent color so it doesn't get mistaken for a direction button. */
+.mobile-controls .pad-btn-fire {
+  margin-left: 6px;
+  border-color: rgba(56,189,248,0.6);
+  color: #38BDF8;
+  box-shadow: 0 0 10px rgba(56,189,248,0.35);
+}
+
+/* ---------------- Result screen ---------------- */
+#screen-result { justify-content: center; align-items: center; min-height: 70vh; }
+#screen-result .card { width: 100%; max-width: 600px; text-align: center; }
+.result-score { font-size: 44px; color: var(--green); text-shadow: 0 0 20px rgba(34,197,94,0.6); margin: 6px 0 18px; }
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin: 18px 0;
+  text-align: left;
+}
+@media (max-width: 480px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } }
+.stat-box {
+  background: rgba(56,189,248,0.06);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 12px;
+}
+.stat-box .hud-label { color: var(--text-muted); }
+.stat-box .hud-value { font-size: 17px; }
+
+/* ---------------- Leaderboard modal ---------------- */
+#screen-leaderboard {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(2,6,23,0.75);
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+  padding: 16px;
+}
+#screen-leaderboard.active { display: flex; }
+#screen-leaderboard .card { width: 100%; max-width: 460px; max-height: 80vh; overflow-y: auto; }
+
+.leaderboard-list { list-style: none; margin: 16px 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.leaderboard-row {
+  display: grid;
+  grid-template-columns: 32px 1fr 70px 60px;
+  gap: 8px;
+  align-items: center;
+  padding: 8px 10px;
+  background: rgba(148,163,184,0.06);
+  border-radius: 6px;
+  font-size: 13px;
+}
+.leaderboard-row.is-you { background: rgba(79,70,229,0.25); border: 1px solid var(--indigo); }
+.lb-rank { color: var(--blue); font-family: var(--font-display); }
+.lb-score { color: var(--green); text-align: right; }
+.lb-date { color: var(--text-muted); text-align: right; font-size: 11px; }
+.leaderboard-empty { color: var(--text-muted); font-size: 13px; text-align: center; padding: 20px 0; }
+
+/* Screen-reader only live region for timer/game announcements */
+.sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.settings-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 14px;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+footer.credit {
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 11px;
+  padding: 6px 0 16px;
+}
+
+/* ============================================================
+   STORY MODE additions
+   ============================================================ */
+
+.story-copy {
+  font-size: 14px;
+  color: var(--text);
+  line-height: 1.6;
+  margin-top: 14px;
+}
+.story-hint {
+  font-size: 12px;
+  color: var(--blue);
+  margin-top: 10px;
+  letter-spacing: 0.02em;
+}
+
+/* ---------------- Story briefing / mode select ---------------- */
+#screen-story-briefing { justify-content: center; align-items: center; min-height: 70vh; }
+#screen-story-briefing .card { width: 100%; max-width: 640px; }
+
+#screen-mode-select { justify-content: center; align-items: center; min-height: 70vh; }
+#screen-mode-select .card.mode-select-card { width: 100%; max-width: 940px; }
+
+.mode-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 18px;
+  margin-top: 20px;
+}
+@media (max-width: 860px) {
+  .mode-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 620px) {
+  .mode-grid { grid-template-columns: 1fr; }
+}
+.mode-option {
+  background: rgba(56,189,248,0.05);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.mode-option h3 {
+  font-family: var(--font-display);
+  font-size: 18px;
+  color: var(--text);
+  margin: 0;
+}
+.mode-option p {
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.55;
+  margin: 0 0 6px;
+  flex-grow: 1;
+}
+
+#screen-story-instructions { justify-content: center; align-items: center; min-height: 70vh; }
+#screen-story-instructions .card { width: 100%; max-width: 640px; }
+
+/* ---------------- Story game screen ---------------- */
+/* #screen-game (Arcade) has its own flex-direction:column so its HUD bar
+   stacks above the canvas; #screen-story never got the equivalent rule,
+   so it fell back to flexbox's row default -- the .hud card and the canvas
+   ended up side by side instead of stacked, squeezing (and, combined with
+   the canvas's missing responsive sizing below, on some widths overflowing)
+   the canvas horizontally. */
+#screen-story { flex-direction: column; gap: 10px; }
+
+/* Mirrors Arcade's .canvas-wrap/#canvas responsive treatment (width:100%,
+   height:auto, aspect-ratio) -- without it, the canvas rendered at its
+   fixed 900x600 intrinsic size and simply overflowed off the right edge
+   of the page on any viewport narrower than ~960px, with nothing to
+   scroll or resize it back into view. The in-game camera was panning
+   correctly the whole time; the canvas itself just didn't fit. */
+.story-canvas-wrap {
+  position: relative;
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--bg);
+  line-height: 0;
+}
+#storyCanvas {
+  width: 100%;
+  height: auto;
+  display: block;
+  aspect-ratio: 900 / 600;
+  touch-action: none;
+}
+
+.story-overlay {
+  display: none;
+  position: absolute;
+  inset: 0;
+  background: rgba(2,6,23,0.86);
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  overflow-y: auto;
+  /* .canvas-wrap (the parent) sets line-height:0 to collapse the canvas's
+     inline whitespace gap — reset it here so every text line inside this
+     overlay gets normal line-box height instead of inheriting 0. */
+  line-height: 1.5;
+}
+.story-overlay.active { display: flex; }
+
+/* Mario-style lift transition — a full-bleed panel slides in from the
+   right to fully cover the canvas, the next floor's briefing loads while
+   hidden behind it, then it slides back out to the left. Pure CSS
+   transform animation; story.js only toggles the two classes below. */
+.story-transition {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, #050914, #0f172a 55%, #050914);
+  transform: translateX(110%);
+  z-index: 5;
+  pointer-events: none;
+}
+.story-transition::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    repeating-linear-gradient(90deg, rgba(56,189,248,0.08) 0 2px, transparent 2px 34px);
+}
+.story-transition.slide-in { animation: liftSlideIn 0.42s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+.story-transition.slide-out { animation: liftSlideOut 0.42s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+@keyframes liftSlideIn {
+  from { transform: translateX(110%); }
+  to { transform: translateX(0%); }
+}
+@keyframes liftSlideOut {
+  from { transform: translateX(0%); }
+  to { transform: translateX(-110%); }
+}
+
+.story-panel {
+  background: linear-gradient(180deg, var(--bg-elevated), var(--bg-card));
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  max-width: 460px;
+  width: 100%;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+}
+.story-panel.story-panel-wide { max-width: 640px; }
+
+/* ---------------- Pre-level briefing for "choice" mode floors ---------------- */
+/* The former quiz/treasure floors: the question/clue + lettered options are
+   read here, before entering the maze, since in-level markers only show the
+   bare letter (see platformer.js's drawChoiceMarker — deliberately not
+   colored by correctness). */
+.choice-briefing {
+  margin-top: 14px;
+}
+.choice-brief-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 10px;
+}
+@media (max-width: 480px) { .choice-brief-list { grid-template-columns: 1fr; } }
+.choice-brief-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  background: rgba(56,189,248,0.06);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 12.5px;
+  line-height: 1.4;
+  color: var(--text);
+}
+.choice-brief-letter {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  background: rgba(79,70,229,0.25);
+  color: var(--blue);
+  font-family: var(--font-display);
+  font-size: 13px;
+}
+
+/* ---------------- Password fragment progress (Secure Server Room) ---------------- */
+.password-progress {
+  margin-top: 14px;
+  background: rgba(34,197,94,0.07);
+  border: 1px solid rgba(34,197,94,0.3);
+  border-radius: 8px;
+  padding: 10px 14px;
+}
+.password-progress-label {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--green);
+  margin-bottom: 4px;
+}
+.password-track {
+  font-family: var(--font-display);
+  font-size: 18px;
+  letter-spacing: 0.3em;
+  color: var(--text);
+}
+
+/* ---------------- Server terminal (final password entry) ---------------- */
+.terminal-panel .terminal-input-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 16px;
+  background: #05070d;
+  border: 1px solid var(--green);
+  border-radius: 6px;
+  padding: 10px 12px;
+}
+.terminal-prompt { color: var(--green); font-family: var(--font-mono); font-size: 16px; }
+.terminal-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--green);
+  font-family: var(--font-mono);
+  font-size: 16px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+}
+.terminal-input::placeholder { color: rgba(34,197,94,0.4); letter-spacing: normal; text-transform: none; }
+.terminal-feedback {
+  margin-top: 10px;
+  font-size: 12px;
+  color: var(--text-muted);
+  min-height: 16px;
+}
+
+/* ---------------- Pinned note (riddle / clue presentation) ---------------- */
+.pinned-note {
+  position: relative;
+  margin-top: 16px;
+  background: repeating-linear-gradient(0deg, rgba(250,204,21,0.08) 0 26px, rgba(250,204,21,0.03) 26px 52px), #1c1a10;
+  border: 1px solid rgba(250,204,21,0.35);
+  border-radius: 4px;
+  padding: 18px 16px 14px;
+  transform: rotate(-0.6deg);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.35);
+}
+.pinned-note .story-copy { margin-top: 0; color: #FDE68A; }
+.pinned-note-pin {
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 20px;
+  filter: drop-shadow(0 3px 3px rgba(0,0,0,0.5));
+}
+
+/* ---------------- Elevator: literal lift-door bank ---------------- */
+.lift-bank {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+  margin-top: 18px;
+  max-height: 56vh;
+  overflow-y: auto;
+  padding: 4px;
+}
+@media (max-width: 620px) { .lift-bank { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 420px) { .lift-bank { grid-template-columns: repeat(2, 1fr); } }
+
+.lift-unit {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  background: rgba(15,23,42,0.6);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 6px 8px;
+  cursor: pointer;
+  font-family: var(--font-mono);
+  transition: border-color 0.12s ease, background 0.12s ease, transform 0.12s ease;
+}
+.lift-unit:hover:not(:disabled) {
+  border-color: var(--indigo);
+  background: rgba(79,70,229,0.15);
+  transform: translateY(-2px);
+}
+.lift-unit:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.lift-plaque {
+  font-family: var(--font-display);
+  color: var(--blue);
+  font-size: 14px;
+  background: rgba(56,189,248,0.1);
+  border: 1px solid rgba(56,189,248,0.3);
+  border-radius: 4px;
+  padding: 1px 8px;
+}
+.lift-unit-visited .lift-plaque { color: var(--green); border-color: rgba(34,197,94,0.35); background: rgba(34,197,94,0.08); }
+
+.lift-doors {
+  position: relative;
+  width: 100%;
+  height: 54px;
+  border-radius: 3px;
+  overflow: hidden;
+  background: #0a0f1c;
+  border: 1px solid rgba(148,163,184,0.25);
+}
+.lift-door {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 50%;
+  background: linear-gradient(180deg, #3b4a63, #1f2937 60%, #161d2b);
+  border: 1px solid rgba(148,163,184,0.2);
+  transition: transform 0.35s ease;
+}
+.lift-door::after {
+  content: "";
+  position: absolute;
+  inset: 6px;
+  border: 1px solid rgba(148,163,184,0.15);
+  border-radius: 2px;
+}
+.lift-door-left { left: 0; border-right: none; transform-origin: left center; }
+.lift-door-right { right: 0; border-left: none; transform-origin: right center; }
+
+.lift-unit:hover:not(:disabled) .lift-door-left { transform: translateX(-92%); }
+.lift-unit:hover:not(:disabled) .lift-door-right { transform: translateX(92%); }
+body.reduced-motion .lift-door { transition: none; }
+body.reduced-motion .lift-unit:hover:not(:disabled) .lift-door-left,
+body.reduced-motion .lift-unit:hover:not(:disabled) .lift-door-right { transform: none; }
+
+.lift-unit-visited .lift-door-left { transform: translateX(-92%); }
+.lift-unit-visited .lift-door-right { transform: translateX(92%); }
+.lift-unit-visited .lift-doors { background: #150c0c; }
+
+.lift-label {
+  font-size: 10px;
+  line-height: 1.3;
+  color: var(--text-muted);
+  text-align: center;
+  min-height: 24px;
+}
+.lift-unit-visited .lift-label { color: var(--red); letter-spacing: 0.03em; }
+
+/* ---------------- Story result screen ---------------- */
+#screen-story-result { justify-content: center; align-items: center; min-height: 70vh; }
+#screen-story-result .card { width: 100%; max-width: 600px; text-align: center; }
+#screen-story-result .story-copy { text-align: left; }
+#screen-story-result .card.result-victory #storyResultTitle { color: var(--green); text-shadow: 0 0 18px rgba(34,197,94,0.6); }
+#screen-story-result #storyResultTitle { color: var(--red); text-shadow: 0 0 18px rgba(239,68,68,0.5); }
+
+/* ---------------- Leaderboard tabs ---------------- */
+.lb-tabs {
+  display: flex;
+  gap: 6px;
+  margin-top: 16px;
+}
+.lb-tab {
+  flex: 1;
+  padding: 8px 10px;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+.lb-tab.active {
+  background: rgba(79,70,229,0.25);
+  border-color: var(--indigo);
+  color: var(--text);
+}
+
+/* ============================================================
+   FPS MODE additions — "Lobby Breach" raycaster preview
+   ============================================================ */
+
+#screen-fps-instructions { justify-content: center; align-items: center; min-height: 70vh; }
+#screen-fps-instructions .card { width: 100%; max-width: 640px; }
+
+/* Same lesson as #screen-story above: a new game screen needs its own
+   flex-direction:column so the HUD stacks above the canvas instead of
+   sitting beside it. */
+#screen-fps { flex-direction: column; gap: 10px; }
+
+/* Mirrors .story-canvas-wrap/#storyCanvas's responsive treatment — fixed
+   900x600 intrinsic size scaled to 100% width with height:auto via
+   aspect-ratio, so the raycast view never overflows the viewport. */
+.fps-canvas-wrap {
+  position: relative;
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--bg);
+  line-height: 0;
+}
+#fpsCanvas {
+  width: 100%;
+  height: auto;
+  display: block;
+  aspect-ratio: 900 / 600;
+  touch-action: none;
+}
+
+/* HUD-corner minimap, absolutely positioned over the raycast canvas. */
+#fpsMinimap {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 120px;
+  height: 120px;
+  background: rgba(2,6,23,0.72);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+#screen-fps-result { justify-content: center; align-items: center; min-height: 70vh; }
+#screen-fps-result .card { width: 100%; max-width: 600px; text-align: center; }
+#screen-fps-result .story-copy { text-align: left; }
+#screen-fps-result .card.result-victory #fpsResultTitle { color: var(--green); text-shadow: 0 0 18px rgba(34,197,94,0.6); }
+#screen-fps-result #fpsResultTitle { color: var(--red); text-shadow: 0 0 18px rgba(239,68,68,0.5); }
+
+/* Floor 1's hacking-terminal side-quest mini-puzzle, rendered into
+   #fpsOverlay (reusing story.js's .story-overlay/.story-panel look). */
+.fps-terminal-opts { display: flex; flex-direction: column; gap: 8px; margin: 14px 0; }
+.fps-terminal-opt { display: flex; align-items: center; gap: 10px; text-align: left; width: 100%; }
+.fps-terminal-letter { font-weight: bold; color: var(--blue, #38BDF8); min-width: 1.2em; }
+
+/* ---------------- Arcade roguelite HUD + perk draft ---------------- */
+/* Integrity bar (replaces the 60-second countdown ring as the thing the
+   player watches) and the combo chain-window bar, both thin inline
+   meters sitting under their HUD value so the bar reads as part of that
+   readout rather than as a separate widget. */
+.health-bar, .combo-timer {
+  display: block;
+  width: 84px;
+  height: 4px;
+  margin-top: 4px;
+  border-radius: 2px;
+  background: rgba(148, 163, 184, 0.22);
+  overflow: hidden;
+}
+.health-bar-fill, .combo-timer-fill {
+  display: block;
+  height: 100%;
+  width: 100%;
+  border-radius: 2px;
+  background: var(--green, #22C55E);
+  transition: width 0.12s linear, background-color 0.2s ease;
+}
+.health-bar-fill.health-low { background: var(--red, #EF4444); }
+.combo-timer-fill { background: var(--blue, #38BDF8); width: 0%; }
+.combo-timer-fill.combo-timer-low { background: var(--amber, #FACC15); }
+
+.hud-perks {
+  display: block;
+  margin-top: 3px;
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  line-height: 1;
+}
+
+/* The perk draft modal, rendered into #arcadeOverlay (which reuses
+   .story-overlay's backdrop). Three cards, keyboard-focusable, sized to
+   stay readable at the canvas's smallest responsive width. */
+.perk-panel { max-width: 780px; }
+.perk-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin: 16px 0 10px;
+}
+@media (max-width: 700px) {
+  .perk-grid { grid-template-columns: 1fr; }
+}
+.perk-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 14px 14px 16px;
+  text-align: left;
+  background: linear-gradient(180deg, rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 0.95));
+  border: 1px solid var(--border, #334155);
+  border-radius: var(--radius, 10px);
+  color: var(--text, #E2E8F0);
+  cursor: pointer;
+  font: inherit;
+  transition: transform 0.12s ease, border-color 0.12s ease, box-shadow 0.12s ease;
+}
+.perk-card:hover, .perk-card:focus-visible {
+  transform: translateY(-3px);
+  border-color: var(--blue, #38BDF8);
+  box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.4), 0 12px 28px rgba(0, 0, 0, 0.45);
+  outline: none;
+}
+.perk-icon { font-size: 26px; line-height: 1; }
+.perk-name {
+  font-family: var(--font-display, inherit);
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--blue, #38BDF8);
+  letter-spacing: 0.02em;
+}
+.perk-desc { font-size: 12.5px; line-height: 1.5; color: var(--text-muted, #94A3B8); }
+.perk-key {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  font-family: var(--font-mono, monospace);
+  font-size: 11px;
+  color: var(--text-muted, #64748B);
+  border: 1px solid var(--border, #334155);
+  border-radius: 4px;
+  padding: 1px 5px;
+}
+
+/* Drafted-perk chips on the result screen. */
+.result-perks {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+  margin: 10px auto 12px;
+  max-width: 520px;
+}
+.perk-chip {
+  font-size: 12px;
+  padding: 4px 9px;
+  border-radius: 999px;
+  border: 1px solid rgba(56, 189, 248, 0.4);
+  background: rgba(56, 189, 248, 0.09);
+  color: var(--blue, #38BDF8);
+}
+.perk-chip-none {
+  border-color: var(--border, #334155);
+  background: transparent;
+  color: var(--text-muted, #64748B);
+}
+
+/* The once-per-act framing paragraph on a Story Mode briefing (see
+   story.js's ACT_OPENERS) — set apart from the floor's own intro copy so
+   the act-level arc reads as a different register than the room in front
+   of you. */
+.story-panel .act-opener {
+  border-left: 3px solid var(--blue, #38BDF8);
+  padding-left: 12px;
+  margin-bottom: 12px;
+  color: var(--text-muted, #94A3B8);
+  font-style: italic;
+  letter-spacing: 0.01em;
+}
+
+/* ---------------- Fullscreen mode ---------------- */
+/* Each game screen (#screen-game / #screen-story / #screen-fps) is the
+   element actually fullscreened (see UI.bindFullscreenToggle() in ui.js)
+   so the HUD and touch pad stay on-screen alongside the canvas, not just
+   the canvas alone. The fullscreen element escapes #app's 960px max-width
+   on its own, but .story-canvas-wrap/.fps-canvas-wrap still had their own
+   explicit 900px cap for the normal (windowed) layout -- without relaxing
+   that here too, "fullscreen" would just mean a small 900px-wide canvas
+   floating in a sea of black instead of actually filling the display. The
+   900/600 aspect ratio is kept (see #storyCanvas/#fpsCanvas), so the cap
+   is the larger of width- or height-bound, whichever the viewport allows. */
+.screen:fullscreen { justify-content: center; padding-top: 16px; }
+.screen:-webkit-full-screen { justify-content: center; padding-top: 16px; }
+.screen:fullscreen .story-canvas-wrap,
+.screen:fullscreen .fps-canvas-wrap,
+.screen:fullscreen .canvas-wrap,
+.screen:-webkit-full-screen .story-canvas-wrap,
+.screen:-webkit-full-screen .fps-canvas-wrap,
+.screen:-webkit-full-screen .canvas-wrap {
+  max-width: min(96vw, 144vh);
+}

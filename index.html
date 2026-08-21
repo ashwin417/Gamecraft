@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Cyber Guardian: Mission Indigo</title>
+<meta name="description" content="A cyber-defense arcade mission and a 10-floor Dave-style infiltration campaign, built for GameCraft 2026." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+<div id="app">
+
+  <!-- Screen-reader live region for timer warnings / game-end announcements -->
+  <div id="srAnnounncer" class="sr-only" aria-live="polite"></div>
+
+  <!-- ===================== NAME CAPTURE ===================== -->
+  <section id="screen-name" class="screen active" aria-hidden="false">
+    <div class="card">
+      <div class="eyebrow">GameCraft 2026 &middot; Mission Briefing</div>
+      <h1 class="title">CYBER GUARDIAN: MISSION INDIGO</h1>
+      <p class="subtitle">
+        A cyber attack has been detected inside Meridian Corp's digital infrastructure.
+        You are an authorized Cyber Guardian. Reach the Server Room and secure
+        critical systems before the threat spreads.
+      </p>
+
+      <div class="field">
+        <label for="playerNameInput">Guardian Callsign (Player Name)</label>
+        <input type="text" id="playerNameInput" maxlength="20" autocomplete="off"
+               placeholder="e.g. Agent Rivera" aria-describedby="nameError charHint" />
+        <p id="nameError" class="error-text" role="alert"></p>
+        <p id="charHint" class="char-hint">Required &middot; up to 20 characters.</p>
+      </div>
+
+      <div class="btn-row">
+        <button id="btnContinueToBriefing" class="btn btn-primary">Continue &rarr;</button>
+        <button id="btnLeaderboardTop" class="btn btn-ghost" type="button">View Leaderboard</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== STORY BRIEFING (shown before Start, both modes) ===================== -->
+  <section id="screen-story-briefing" class="screen" aria-hidden="true">
+    <div class="card">
+      <div class="eyebrow">Classified Dossier &middot; Guardian <span id="briefingPlayerName"></span></div>
+      <h1 class="title">THE INDIGO TOWER INCIDENT</h1>
+      <p class="subtitle">
+        02:14 AM. Meridian Corp's Indigo Tower — ten floors of offices, labs, and the
+        server core that keeps the whole campus running. An intrusion alert
+        just tripped on the ground floor, and it's climbing.
+      </p>
+      <p class="story-copy">
+        You're the on-call Cyber Guardian. Whoever — or whatever — is inside
+        the building has already been through HR's password files, Finance's
+        invoices, and the exec suite. Every floor they've touched left a
+        trace: a clue pointing to where they went next. Your job is to follow
+        that trail up through all ten floors and lock the threat out of the
+        Server Room before it locks everyone else out first.
+      </p>
+      <p class="story-copy">
+        Security is still active on every floor. Guards patrol on schedule,
+        terminals are still logged in, and one wrong move — a guard's
+        flashlight, a wrong password, a wrong floor in the elevator — ends
+        the mission on the spot. Move carefully. Read every clue twice.
+      </p>
+      <div class="btn-row">
+        <button id="btnBriefingBack" class="btn btn-secondary" type="button">&larr; Back</button>
+        <button id="btnBriefingContinue" class="btn btn-primary" type="button">Choose Your Mission &rarr;</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== MODE SELECT ===================== -->
+  <section id="screen-mode-select" class="screen" aria-hidden="true">
+    <div class="card mode-select-card">
+      <div class="eyebrow">Guardian <span id="modeSelectPlayerName"></span> &middot; Deployment Options</div>
+      <h2 class="title">Choose Your Mission</h2>
+      <p class="subtitle">Two ways to play — pick one below.</p>
+
+      <div class="mode-grid">
+        <div class="mode-option">
+          <div class="eyebrow">GameCraft Official Mode</div>
+          <h3>Arcade Mission</h3>
+          <p>The original 60-second run. Six zones, one countdown, as many trips to the Server Room as you can manage before time runs out.</p>
+          <button id="btnSelectArcade" class="btn btn-primary" type="button">Deploy: Arcade &rarr;</button>
+        </div>
+        <div class="mode-option">
+          <div class="eyebrow">New &middot; Story Campaign</div>
+          <h3>Story Mode: Ten Floors</h3>
+          <p>Climb all 10 floors of Indigo Tower. Solve a maze, quiz, or treasure hunt on each one, then use the clue to pick the next floor. One mistake ends the mission.</p>
+          <button id="btnSelectStory" class="btn btn-primary" type="button">Deploy: Story Mode &rarr;</button>
+        </div>
+        <div class="mode-option">
+          <div class="eyebrow">New &middot; First-Person Campaign</div>
+          <h3>FPS Mode: Lobby Breach</h3>
+          <p>All 10 floors of Indigo Tower in first person, classic-raycaster style — real multi-room layouts with doors, mouse-look steering, textured corridors, tiled floors, a stun pistol in hand, a health bar instead of instant death, keycards, hidden terminals and caches on every floor, and a Sentinel guarding the exit on Floor 10. Collect every badge and reach the elevator on each floor to advance.</p>
+          <button id="btnSelectFps" class="btn btn-primary" type="button">Deploy: FPS Mode &rarr;</button>
+        </div>
+      </div>
+
+      <div class="settings-row">
+        <input type="checkbox" id="reducedMotionToggle" />
+        <label for="reducedMotionToggle">Reduce motion &amp; flashing effects</label>
+      </div>
+
+      <div class="btn-row">
+        <button id="btnModeSelectBack" class="btn btn-secondary" type="button">&larr; Back to Briefing</button>
+        <button id="btnLeaderboardModeSelect" class="btn btn-ghost" type="button">View Leaderboard</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== ARCADE INSTRUCTIONS ===================== -->
+  <section id="screen-instructions" class="screen" aria-hidden="true">
+    <div class="card">
+      <div class="eyebrow">Guardian <span id="hudPlayerNamePreview"></span> &middot; Arcade Mission</div>
+      <h2 class="title">Mission Instructions</h2>
+
+      <div class="brief-grid">
+        <div class="brief-section">
+          <h3>Mission</h3>
+          <p>An <strong>endless descent</strong>. Each floor is the same six zones —
+             Main Gate, Checkpoint, Office Floor, NOC, Data Center Corridor, and the
+             Server Room. Reach the server rack to clear the floor, and the tower
+             immediately rebuilds itself harder: <strong>+5% enemy speed and +10%
+             more threats every single floor</strong>, forever. There is no timer.
+             See how deep you can get.</p>
+        </div>
+        <div class="brief-section">
+          <h3>Integrity, not a clock</h3>
+          <p>You have an <strong>integrity bar</strong> instead of a countdown. Every
+             hazard hit costs a chunk of it and the run ends at zero — so a drone
+             collision is no longer just lost points, it's a resource you can't get
+             back. Clearing floors and Repair pickups patch some of it back.</p>
+        </div>
+        <div class="brief-section">
+          <h3>Controls</h3>
+          <ul>
+            <li>Move: Arrow Keys or WASD</li>
+            <li>EMP pulse: <strong>X</strong> or <strong>F</strong> (or the &#9889; button)
+                &mdash; disables every drone in radius for a few seconds and feeds your combo</li>
+            <li>Perk draft: click a card, or press <strong>1</strong>&ndash;<strong>3</strong></li>
+            <li>Touch d-pad appears automatically on tablets</li>
+          </ul>
+        </div>
+        <div class="brief-section">
+          <h3>Chain your combo</h3>
+          <p>The multiplier now rewards <strong>speed</strong>. Every pickup and every
+             EMP stun refreshes a short chain window; keep chaining and the multiplier
+             climbs 1.5&times; &rarr; 2&times; &rarr; 2.5&times; &rarr; 3&times; &rarr;
+             4&times; &rarr; 5&times;. Let the window lapse and it decays on its own.
+             Take damage and it drops straight back to 1&times;.</p>
+        </div>
+        <div class="brief-section">
+          <h3>Draft a perk every 3 floors</h3>
+          <p>Every third floor cleared, the run pauses and offers three randomized
+             perks &mdash; Silent Footsteps, Wider EMP Radius, Extra Health, Fleet
+             Runner, Combo Keeper, Hardened Shell, Scavenger and more. Pick one; it
+             stays for the rest of the run and they stack.</p>
+        </div>
+        <div class="brief-section">
+          <h3>Scoring</h3>
+          <ul>
+            <li class="score-pos">+10 &mdash; Security Token</li>
+            <li class="score-pos">+15 &mdash; Drone EMP'd</li>
+            <li class="score-pos">+20 &mdash; Patch Applied</li>
+            <li class="score-pos">+50 &mdash; Checkpoint Activated</li>
+            <li class="score-pos">+100 &mdash; Floor Cleared (Server Room)</li>
+            <li class="score-neg">&minus;10 &mdash; Laser Hit &middot; &minus;12 integrity</li>
+            <li class="score-neg">&minus;15 &mdash; Malware Trap &middot; &minus;15 integrity</li>
+            <li class="score-neg">&minus;20 &mdash; Drone Collision &middot; &minus;20 integrity</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button id="btnArcadeBack" class="btn btn-secondary">&larr; Back</button>
+        <button id="btnStartGame" class="btn btn-primary">Start Mission</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== ARCADE GAME SCREEN ===================== -->
+  <section id="screen-game" class="screen" aria-hidden="true">
+    <div class="hud" role="status">
+      <div class="hud-item">
+        <span class="hud-label">Guardian</span>
+        <span class="hud-value" id="hudPlayerName">&mdash;</span>
+      </div>
+      <div class="hud-item">
+        <span class="hud-label">Score</span>
+        <span class="hud-value" id="hudScore">0</span>
+      </div>
+      <div class="hud-item" id="comboBox">
+        <span class="hud-label">Combo</span>
+        <span class="hud-value"><span id="hudCombo">0</span><span id="hudComboMult"></span></span>
+        <span class="combo-timer"><span class="combo-timer-fill" id="hudComboTimer"></span></span>
+      </div>
+      <div class="hud-item">
+        <span class="hud-label">Integrity</span>
+        <span class="hud-value" id="hudHealth">100</span>
+        <span class="health-bar"><span class="health-bar-fill" id="hudHealthBar"></span></span>
+      </div>
+      <div class="hud-item">
+        <span class="hud-label">Powerup</span>
+        <span class="hud-value powerup-none" id="hudPowerupStatus">NONE</span>
+      </div>
+      <div class="hud-item hud-mission">
+        <span class="hud-label" id="hudMissionProgress">Zone 1/6</span>
+        <span class="hud-value" id="hudZoneLabel">Meridian Main Gate</span>
+      </div>
+      <div class="hud-item hud-mission">
+        <span class="hud-label">Floor</span>
+        <span class="hud-value" id="hudArcadeFloor">1</span>
+        <span class="hud-perks" id="hudPerks"></span>
+      </div>
+      <div class="hud-audio">
+        <button id="btnMute" class="btn btn-secondary" type="button" aria-pressed="false">&#128266; Sound</button>
+        <button id="btnFullscreen" class="btn btn-secondary" type="button" aria-pressed="false">&#9970; Fullscreen</button>
+        <input type="range" id="volumeSlider" min="0" max="100" value="60" aria-label="Volume" />
+      </div>
+    </div>
+
+    <div class="canvas-wrap">
+      <canvas id="canvas" width="900" height="600" role="img"
+              aria-label="Cyber Guardian game world"></canvas>
+      <div id="arcadeOverlay" class="story-overlay" aria-live="polite" aria-hidden="true"></div>
+    </div>
+
+    <div class="mobile-controls" aria-hidden="true">
+      <button class="pad-btn" id="padLeft" type="button">&#8592;</button>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <button class="pad-btn" id="padUp" type="button">&#8593;</button>
+        <button class="pad-btn" id="padDown" type="button">&#8595;</button>
+      </div>
+      <button class="pad-btn" id="padRight" type="button">&#8594;</button>
+      <button class="pad-btn pad-btn-fire" id="padFire" type="button" aria-label="Fire EMP pulse">&#9889;</button>
+    </div>
+  </section>
+
+  <!-- ===================== ARCADE RESULT SCREEN ===================== -->
+  <section id="screen-result" class="screen" aria-hidden="true">
+    <div class="card">
+      <div class="eyebrow">Mission Debrief</div>
+      <h2 class="title" id="resultTitle">RUN OVER</h2>
+      <p class="subtitle">Guardian <strong id="resultPlayerName">&mdash;</strong>, here is your run.</p>
+      <p class="story-copy" id="resultSubtitle" style="text-align:center;"></p>
+      <div class="result-score" id="resultFinalScore">0</div>
+
+      <div class="stats-grid">
+        <div class="stat-box"><span class="hud-label">Floors Cleared</span><br/><span class="hud-value" id="resultFloorsCleared">0</span></div>
+        <div class="stat-box"><span class="hud-label">Personal Best</span><br/><span class="hud-value" id="resultPersonalBest">0</span></div>
+        <div class="stat-box"><span class="hud-label">Highest Combo</span><br/><span class="hud-value" id="resultHighestCombo">0</span></div>
+        <div class="stat-box"><span class="hud-label">Drones EMP'd</span><br/><span class="hud-value" id="resultDronesStunned">0</span></div>
+        <div class="stat-box"><span class="hud-label">Threats Avoided</span><br/><span class="hud-value" id="resultThreatsAvoided">0</span></div>
+        <div class="stat-box"><span class="hud-label">Tokens Collected</span><br/><span class="hud-value" id="resultTokens">0</span></div>
+        <div class="stat-box"><span class="hud-label">Patches Applied</span><br/><span class="hud-value" id="resultPatches">0</span></div>
+        <div class="stat-box"><span class="hud-label">Server Rooms Secured</span><br/><span class="hud-value" id="resultServerRooms">0</span></div>
+      </div>
+      <div class="result-perks" id="resultPerks"></div>
+      <div class="stat-box" style="max-width:220px;margin:0 auto 6px;">
+        <span class="hud-label">Leaderboard Position</span><br/>
+        <span class="hud-value" id="resultLeaderboardPosition">&mdash;</span>
+      </div>
+
+      <div class="btn-row" style="justify-content:center;">
+        <button id="btnPlayAgain" class="btn btn-primary">Play Again</button>
+        <button id="btnViewLeaderboardFromResult" class="btn btn-ghost" type="button">View Leaderboard</button>
+        <button id="btnResultModeSelect" class="btn btn-secondary" type="button">Change Mission</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== STORY MODE INSTRUCTIONS ===================== -->
+  <section id="screen-story-instructions" class="screen" aria-hidden="true">
+    <div class="card">
+      <div class="eyebrow">Guardian <span id="storyIntroPlayerName"></span> &middot; Story Campaign</div>
+      <h2 class="title">Ten Floors of Indigo Tower</h2>
+
+      <div class="brief-grid">
+        <div class="brief-section">
+          <h3>How it works</h3>
+          <p>Each floor is a self-contained challenge — a Dangerous-Dave-style
+             run/jump/climb level, a security quiz, or a treasure hunt for a
+             hidden clue. Solve it, and a riddle points you toward the next
+             correct floor.</p>
+        </div>
+        <div class="brief-section">
+          <h3>Controls</h3>
+          <ul>
+            <li>Platform floors: Arrow Keys or A/D to run, Up/W/Space to jump, Up/Down on a ladder to climb</li>
+            <li>X or F fires a short-range stun charge; once you've picked up a guard's gun, G fires it too — unlimited ammo, and it can permanently take down guards, not just stun them</li>
+            <li>Quiz &amp; treasure floors: click or tab + Enter</li>
+            <li>Touch d-pad appears automatically on tablets</li>
+          </ul>
+        </div>
+        <div class="brief-section">
+          <h3>Bonus content</h3>
+          <p>Every floor also hides a scatter of 🪙 coins (pure score), one 🛡
+             shield pickup (a few seconds of guard/hazard immunity), one or
+             two small patrol bots you can stomp from above for a bounce
+             (touch them any other way and it's a hazard, same as a guard),
+             and a slow bonus platform to ride.</p>
+        </div>
+        <div class="brief-section">
+          <h3>One mistake ends it</h3>
+          <ul>
+            <li class="score-neg">A guard catches you &rarr; mission over</li>
+            <li class="score-neg">You fall into a gap with no floor &rarr; mission over</li>
+            <li class="score-neg">A wrong quiz answer &rarr; mission over</li>
+            <li class="score-neg">The wrong treasure pick &rarr; mission over</li>
+            <li class="score-neg">The wrong floor in the elevator &rarr; mission over</li>
+          </ul>
+        </div>
+        <div class="brief-section">
+          <h3>Scoring</h3>
+          <p>On platform floors, every trophy you collect banks points and the
+             exit door stays locked until you've grabbed them all. Every floor
+             you clear banks points too — later floors are worth more. Reach
+             Floor 10 and secure the server rack to complete the mission. Your
+             time and floors cleared are tracked on the Story leaderboard.</p>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button id="btnStoryBack" class="btn btn-secondary" type="button">&larr; Back</button>
+        <button id="btnEnterBuilding" class="btn btn-primary" type="button">Enter the Building</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== STORY MODE GAME SCREEN ===================== -->
+  <section id="screen-story" class="screen" aria-hidden="true">
+    <div class="hud" role="status">
+      <div class="hud-item">
+        <span class="hud-label">Guardian</span>
+        <span class="hud-value" id="storyHudPlayerName">&mdash;</span>
+      </div>
+      <div class="hud-item">
+        <span class="hud-label">Score</span>
+        <span class="hud-value" id="storyHudScore">0</span>
+      </div>
+      <div class="hud-item hud-mission">
+        <span class="hud-label" id="storyHudFloor">Floor 1/10</span>
+        <span class="hud-value" id="storyHudFloorName">Main Lobby</span>
+      </div>
+      <div class="hud-item">
+        <span class="hud-label">Mission Clock</span>
+        <span class="hud-value" id="storyHudClock">00:00</span>
+      </div>
+      <div class="hud-audio">
+        <button id="storyBtnMute" class="btn btn-secondary" type="button" aria-pressed="false">&#128266; Sound</button>
+        <button id="storyBtnFullscreen" class="btn btn-secondary" type="button" aria-pressed="false">&#9970; Fullscreen</button>
+        <input type="range" id="storyVolumeSlider" min="0" max="100" value="60" aria-label="Volume" />
+      </div>
+    </div>
+
+    <div class="canvas-wrap story-canvas-wrap">
+      <canvas id="storyCanvas" width="900" height="600" role="img"
+              aria-label="Indigo Tower floor"></canvas>
+      <div id="storyOverlay" class="story-overlay" aria-live="polite"></div>
+      <div id="storyTransition" class="story-transition" aria-hidden="true"></div>
+    </div>
+
+    <div class="mobile-controls" aria-hidden="true">
+      <button class="pad-btn" id="storyPadLeft" type="button">&#8592;</button>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <button class="pad-btn" id="storyPadUp" type="button">&#8593;</button>
+        <button class="pad-btn" id="storyPadDown" type="button">&#8595;</button>
+      </div>
+      <button class="pad-btn" id="storyPadRight" type="button">&#8594;</button>
+      <button class="pad-btn pad-btn-fire" id="storyPadFire" type="button" aria-label="Fire stun charge">&#9889;</button>
+      <button class="pad-btn pad-btn-fire" id="storyPadGun" type="button" aria-label="Fire gun (once acquired)">&#128299;</button>
+      <button class="pad-btn pad-btn-fire" id="storyPadInteract" type="button" aria-label="Hack a light switch or enter a vent">&#8987;</button>
+    </div>
+  </section>
+
+  <!-- ===================== STORY RESULT SCREEN ===================== -->
+  <section id="screen-story-result" class="screen" aria-hidden="true">
+    <div class="card">
+      <div class="eyebrow" id="storyResultEyebrow">Mission Debrief</div>
+      <h2 class="title" id="storyResultTitle">SECURITY ALERT</h2>
+      <p class="subtitle">Guardian <strong id="storyResultPlayerName">&mdash;</strong></p>
+      <p class="story-copy" id="storyResultReason"></p>
+
+      <div class="stats-grid">
+        <div class="stat-box"><span class="hud-label">Score</span><br/><span class="hud-value" id="storyResultScore">0</span></div>
+        <div class="stat-box"><span class="hud-label">Floors Cleared</span><br/><span class="hud-value" id="storyResultFloors">0/10</span></div>
+        <div class="stat-box"><span class="hud-label">Mission Time</span><br/><span class="hud-value" id="storyResultTime">00:00</span></div>
+      </div>
+      <div class="stat-box" style="max-width:220px;margin:0 auto 6px;">
+        <span class="hud-label">Leaderboard Position</span><br/>
+        <span class="hud-value" id="storyResultLeaderboardPosition">&mdash;</span>
+      </div>
+
+      <div class="btn-row" style="justify-content:center;">
+        <button id="btnStoryPlayAgain" class="btn btn-primary" type="button">Try Again</button>
+        <button id="btnStoryResultLeaderboard" class="btn btn-ghost" type="button">View Leaderboard</button>
+        <button id="btnStoryResultModeSelect" class="btn btn-secondary" type="button">Change Mission</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== FPS MODE INSTRUCTIONS ===================== -->
+  <section id="screen-fps-instructions" class="screen" aria-hidden="true">
+    <div class="card">
+      <div class="eyebrow">Guardian <span id="fpsIntroPlayerName"></span> &middot; First-Person Campaign</div>
+      <h2 class="title">FPS Mode: Lobby Breach</h2>
+
+      <div class="brief-grid">
+        <div class="brief-section">
+          <h3>How it works</h3>
+          <p>A first-person, raycasted walkthrough of all 10 floors of
+             Indigo Tower, one after another. Every floor is a real
+             multi-room layout connected by doors that slide open as you
+             approach. Find every badge, avoid the guard(s) on patrol, and
+             reach the elevator alcove to advance to the next floor. Floor 10
+             ends in a real fight — a Sentinel guarding the exit that has to
+             be stunned down before you can leave.</p>
+        </div>
+        <div class="brief-section">
+          <h3>Three kinds of floor</h3>
+          <ul>
+            <li><strong>Floors 1&ndash;3 &mdash; Maintenance Tunnels:</strong>
+                cramped, pillared corridors. Guards hold tight loops by the
+                doorways and won't see you coming down a hall &mdash; they
+                step out as you round the corner. Close range, fast reactions.</li>
+            <li><strong>Floors 4&ndash;7 &mdash; Datacenter:</strong> wide
+                arenas full of server racks. <strong>Snipers</strong> hold
+                the room: they paint a laser sight on you, hold the lock for
+                a beat, then fire hard. Get a rack between you and the lock
+                &mdash; breaking line of sight cancels the shot outright.</li>
+            <li><strong>Floors 8&ndash;10 &mdash; Rooftop Extraction:</strong>
+                an open arena and a countdown. The exit stays sealed until
+                extraction is ready, while waves of attackers spawn in on a
+                cadence. <strong>Explosive barrels</strong> are scattered
+                around &mdash; shoot one to clear a crowd, but don't be
+                standing next to it when you do.</li>
+          </ul>
+        </div>
+        <div class="brief-section">
+          <h3>Controls</h3>
+          <ul>
+            <li>Move: W/S or Up/Down &mdash; walk forward/back</li>
+            <li>Look: click the view to steer with the mouse, or A/D and Left/Right to turn</li>
+            <li>Strafe: A/D or Left/Right once the mouse is steering</li>
+            <li>Stun: X or F (or the lightning button, or click once the mouse is steering) &mdash; fire a stun charge straight ahead</li>
+            <li>Interact: E (or the on-screen button) &mdash; use a nearby terminal</li>
+            <li>Touch controls appear automatically on tablets</li>
+          </ul>
+        </div>
+        <div class="brief-section">
+          <h3>Health, not instant death</h3>
+          <ul>
+            <li class="score-neg">A guard's touch costs you health (with a brief breather before it can hit you again) &mdash; run out and the mission ends</li>
+            <li class="score-pos">Collect all badges and clear any guard blocking the exit, then reach the elevator &rarr; advance to the next floor</li>
+          </ul>
+        </div>
+        <div class="brief-section">
+          <h3>Ammo, keycards &amp; hidden rooms</h3>
+          <p>You start with limited stun charges — treat them as ammo.
+             Firing one paralyzes the guard briefly if it's directly ahead
+             of you and in range. Every floor hides a hacking terminal (its
+             own quiz — a correct answer is worth a bonus charge), a
+             keycard that unlocks one of the floor's doors, and a couple of
+             tucked-away caches worth extra ammo or a health boost — explore
+             past the obvious route to find them.</p>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button id="btnFpsBack" class="btn btn-secondary" type="button">&larr; Back</button>
+        <button id="btnEnterLobby" class="btn btn-primary" type="button">Enter the Lobby</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== FPS MODE GAME SCREEN ===================== -->
+  <section id="screen-fps" class="screen" aria-hidden="true">
+    <div class="hud" role="status">
+      <div class="hud-item">
+        <span class="hud-label">Guardian</span>
+        <span class="hud-value" id="fpsHudPlayerName">&mdash;</span>
+      </div>
+      <div class="hud-item">
+        <span class="hud-label">Health</span>
+        <span class="hud-value" id="fpsHudHealth">100</span>
+      </div>
+      <div class="hud-item">
+        <span class="hud-label">Badges</span>
+        <span class="hud-value" id="fpsHudBadges">0/0</span>
+      </div>
+      <div class="hud-item">
+        <span class="hud-label">Stun/Ammo</span>
+        <span class="hud-value" id="fpsHudStun">0</span>
+      </div>
+      <div class="hud-item">
+        <span class="hud-label">Keycard</span>
+        <span class="hud-value" id="fpsHudKeycard">&mdash;</span>
+      </div>
+      <div class="hud-item hud-mission">
+        <span class="hud-label" id="fpsHudFloorNum">Floor 1/10</span>
+        <span class="hud-value" id="fpsHudFloorName">Main Lobby &amp; Badge Security</span>
+      </div>
+      <div class="hud-audio">
+        <button id="fpsBtnMute" class="btn btn-secondary" type="button" aria-pressed="false">&#128266; Sound</button>
+        <button id="fpsBtnFullscreen" class="btn btn-secondary" type="button" aria-pressed="false">&#9970; Fullscreen</button>
+        <input type="range" id="fpsVolumeSlider" min="0" max="100" value="60" aria-label="Volume" />
+      </div>
+    </div>
+
+    <div class="canvas-wrap fps-canvas-wrap">
+      <canvas id="fpsCanvas" width="900" height="600" role="img"
+              aria-label="First-person view of the Main Lobby"></canvas>
+      <canvas id="fpsMinimap" width="140" height="140" aria-hidden="true"></canvas>
+      <div id="fpsOverlay" class="story-overlay" aria-live="polite"></div>
+    </div>
+
+    <div class="mobile-controls" aria-hidden="true">
+      <button class="pad-btn" id="fpsPadLeft" type="button">&#8634;</button>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <button class="pad-btn" id="fpsPadUp" type="button">&#8593;</button>
+        <button class="pad-btn" id="fpsPadDown" type="button">&#8595;</button>
+      </div>
+      <button class="pad-btn" id="fpsPadRight" type="button">&#8635;</button>
+      <button class="pad-btn pad-btn-fire" id="fpsPadFire" type="button" aria-label="Fire stun charge">&#9889;</button>
+      <button class="pad-btn pad-btn-fire" id="fpsPadInteract" type="button" aria-label="Interact with a nearby terminal">&#8987;</button>
+    </div>
+  </section>
+
+  <!-- ===================== FPS RESULT SCREEN ===================== -->
+  <section id="screen-fps-result" class="screen" aria-hidden="true">
+    <div class="card">
+      <div class="eyebrow" id="fpsResultEyebrow">Mission Debrief</div>
+      <h2 class="title" id="fpsResultTitle">SECURITY ALERT</h2>
+      <p class="subtitle">Guardian <strong id="fpsResultPlayerName">&mdash;</strong></p>
+      <p class="story-copy" id="fpsResultReason"></p>
+
+      <div class="stats-grid">
+        <div class="stat-box"><span class="hud-label">Floors Cleared</span><br/><span class="hud-value" id="fpsResultFloors">0/10</span></div>
+        <div class="stat-box"><span class="hud-label">Badges Collected</span><br/><span class="hud-value" id="fpsResultBadges">0/0</span></div>
+        <div class="stat-box"><span class="hud-label">Time</span><br/><span class="hud-value" id="fpsResultTime">00:00</span></div>
+      </div>
+
+      <div class="btn-row" style="justify-content:center;">
+        <button id="btnFpsPlayAgain" class="btn btn-primary" type="button">Try Again</button>
+        <button id="btnFpsResultModeSelect" class="btn btn-secondary" type="button">Change Mission</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== LEADERBOARD MODAL ===================== -->
+  <div id="screen-leaderboard" role="dialog" aria-modal="true" aria-label="Leaderboard" aria-hidden="true">
+    <div class="card">
+      <div class="eyebrow">Top Guardians</div>
+      <h2 class="title">Leaderboard</h2>
+      <div class="lb-tabs" role="tablist" aria-label="Leaderboard mode">
+        <button id="lbTabArcade" class="lb-tab active" type="button" role="tab" aria-selected="true">Arcade</button>
+        <button id="lbTabStory" class="lb-tab" type="button" role="tab" aria-selected="false">Story</button>
+      </div>
+      <ul class="leaderboard-list" id="leaderboardList"></ul>
+      <div class="btn-row">
+        <button id="btnClearLeaderboard" class="btn btn-secondary" type="button">Clear This List</button>
+        <button id="btnCloseLeaderboard" class="btn btn-primary" type="button">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="credit">CYBER GUARDIAN: MISSION INDIGO &middot; Built for GameCraft 2026</footer>
+</div>
+
+<script src="js/sprites.js"></script>
+<script src="js/player.js"></script>
+<script src="js/obstacles.js"></script>
+<script src="js/guards.js"></script>
+<script src="js/powerups.js"></script>
+<script src="js/timer.js"></script>
+<script src="js/score.js"></script>
+<script src="js/leaderboard.js"></script>
+<script src="js/audio.js"></script>
+<script src="js/floors-data.js"></script>
+<script src="js/platformer.js"></script>
+<script src="js/fps.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/story.js"></script>
+<script src="js/game.js"></script>
+</body>
+</html>
